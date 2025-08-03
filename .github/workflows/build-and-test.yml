@@ -1,0 +1,34 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - name: Dotnet Restore
+        run: dotnet restore
+
+      - name: Restore Tools
+        run: dotnet tool restore
+
+      - name: Check Formatting
+        run: dotnet csharpier check .
+
+      - name: Compile
+        run: dotnet build API
+      - name: Test
+        run: dotnet test API
+
